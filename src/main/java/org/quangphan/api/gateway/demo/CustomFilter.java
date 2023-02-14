@@ -1,5 +1,7 @@
 package org.quangphan.api.gateway.demo;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.context.annotation.Configuration;
@@ -11,10 +13,12 @@ import reactor.core.publisher.Mono;
 @Configuration
 public class CustomFilter implements GlobalFilter {
 
+    Logger logger = LoggerFactory.getLogger(CustomFilter.class);
+
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         ServerHttpRequest request = exchange.getRequest();
-        System.out.println("Authorization: " + request.getHeaders().getFirst("Authorization"));
+        logger.info("Authorization: {} ", request.getHeaders().getFirst("Authorization"));
 
         return chain.filter(exchange).then(Mono.fromRunnable(() -> {
             ServerHttpResponse response = exchange.getResponse();
